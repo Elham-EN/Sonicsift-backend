@@ -22,12 +22,14 @@ const userSchema = new Schema<UserDocument>(
       type: String,
       required: true,
       trim: true,
+      lowercase: true,
     },
     email: {
       type: String,
       required: true,
       trim: true,
       unique: true,
+      lowercase: true,
     },
     password: {
       type: String,

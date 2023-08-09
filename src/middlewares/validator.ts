@@ -17,7 +17,8 @@ export function validate(schema: any): RequestHandler {
     // If the incoming request doesn't have a body (i.e., it's null or
     // undefined), the middleware will send an error response to the
     // client stating that an empty body was not expected.
-    if (!req.body) return res.json({ error: "Empty body is not expected" });
+    if (!req.body)
+      return res.status(400).json({ error: "Empty body is not expected" });
     //  creates a yup schema object where the object's body property should
     //  conform to the schema provided as an argument to the middleware function
     const schemaToValidate = yup.object({
@@ -41,7 +42,7 @@ export function validate(schema: any): RequestHandler {
       next();
     } catch (error) {
       if (error instanceof yup.ValidationError) {
-        res.json({ error: error.message });
+        res.status(422).json({ error: error.message });
       }
     }
   };
