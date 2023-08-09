@@ -8,5 +8,7 @@ An Audio Sharing App is a digital platform or application that allows users to u
 - Node.js
 - Express.js
 - MongoDB
+- Mailtrap
+- Cloudinary
 
 ## Setup to run the app

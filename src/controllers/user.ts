@@ -1,12 +1,7 @@
 import { CreateUser } from "#/@types/user";
 import User from "#/models/user";
-import EmailVerificationToken from "#/models/emailVerificationToken";
 import { Response } from "express";
-import nodemailer from "nodemailer";
-import { MAILTRAP_USER, MAILTRAP_PASS } from "#/utils/variables";
 import { generateToken } from "#/utils/helper";
-import { generateTemplate } from "#/mail/template";
-import path from "path";
 import { sendVerificationMail } from "#/utils/mail";
 
 // Create User
