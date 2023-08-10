@@ -1,3 +1,4 @@
+import { compare, hash } from "bcrypt";
 import { Model, ObjectId, Schema, model } from "mongoose";
 // Define user model type and structure
 interface UserDocument {
@@ -15,8 +16,12 @@ interface UserDocument {
   followings: ObjectId[];
 }
 
+interface Methods {
+  comparePassword(password: string): Promise<boolean>;
+}
+
 // Create user schema (structure the data shape)
-const userSchema = new Schema<UserDocument>(
+const userSchema = new Schema<UserDocument, {}, Methods>(
   {
     name: {
       type: String,
@@ -53,4 +58,16 @@ const userSchema = new Schema<UserDocument>(
   { timestamps: true }
 );
 
-export default model("User", userSchema) as Model<UserDocument>;
+userSchema.pre("save", async function (next) {
+  if (this.isModified("password")) {
+    this.password = await hash(this.password, 10);
+  }
+  next();
+});
+
+userSchema.methods.comparePassword = async function name(password) {
+  const result = await compare(password, this.password);
+  return result;
+};
+
+export default model("User", userSchema) as Model<UserDocument, {}, Methods>;
