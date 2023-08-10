@@ -27,11 +27,6 @@ export async function sendVerificationMail(token: string, profile: Profile) {
 
   const transport = generateMailTransporter();
 
-  await EmailVerificationToken.create({
-    owner: userId,
-    token,
-  });
-
   const welcomeMessage = `Hi ${name}, welcome to SonicSift! There 
   are so much that we do for verified users. Use the given OTP to 
   verify your email.`;
