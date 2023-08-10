@@ -1,8 +1,9 @@
-import { CreateUser } from "#/@types/user";
+import { CreateUser, VerifyEmailRequest } from "#/@types/user";
 import User from "#/models/user";
-import { Response } from "express";
+import { Request, Response } from "express";
 import { generateToken } from "#/utils/helper";
 import { sendVerificationMail } from "#/utils/mail";
+import EmailVerificationToken from "#/models/emailVerificationToken";
 
 // Create User
 export async function create(req: CreateUser, res: Response) {
@@ -20,4 +21,30 @@ export async function create(req: CreateUser, res: Response) {
   });
 
   res.status(201).json({ id: user._id, name, email });
+}
+
+// Create route from where we can send OTP to verifiy the email
+export async function verifyEmail(req: VerifyEmailRequest, res: Response) {
+  const { token, userId } = req.body;
+
+  const verificationToken = await EmailVerificationToken.findOne({
+    owner: userId,
+  });
+
+  if (!verificationToken)
+    return res.status(403).json({ error: "Invalid Token!" });
+
+  const matched = await verificationToken.compareToken(token);
+
+  if (!matched) return res.status(403).json({ error: "Invalid Token!" });
+
+  // Verify that user's email is real
+  await User.findByIdAndUpdate(userId, {
+    verified: true,
+  });
+
+  // Once user's email is verified, token no longer needed (Delete Doc)
+  await EmailVerificationToken.findByIdAndDelete(verificationToken._id);
+
+  res.json({ message: "Your email is verified" });
 }
