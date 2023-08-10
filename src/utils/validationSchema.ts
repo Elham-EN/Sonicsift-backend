@@ -1,4 +1,5 @@
 import * as yup from "yup";
+import { isValidObjectId } from "mongoose";
 import User from "#/models/user";
 
 const emailIsUnique = async (email: string) => {
@@ -30,4 +31,19 @@ export const CreateUserSchema = yup.object().shape({
       /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#\$%\^&\*])[a-zA-Z\d!@#\$%\^&\*]+$/,
       "Password must be strong"
     ),
+});
+
+export const EmailVerificationBody = yup.object().shape({
+  token: yup.string().trim().required("Invalid Token"),
+  userId: yup
+    .string()
+    // run custom validation (value come from incoming resquest)
+    .transform(function (value) {
+      // if value is type string and valid objectId
+      if (this.isType(value) && isValidObjectId(value)) {
+        return value;
+      }
+      return ""; // transforming value into empty string
+    })
+    .required("Invalid userId"), // if empty throw an error
 });
