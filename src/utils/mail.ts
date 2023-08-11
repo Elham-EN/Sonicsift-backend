@@ -1,6 +1,5 @@
 import nodemailer from "nodemailer";
-import { MAILTRAP_USER, MAILTRAP_PASS } from "./variables";
-import EmailVerificationToken from "#/models/emailVerificationToken";
+import { MAILTRAP_USER, MAILTRAP_PASS, SIGN_IN_URL } from "./variables";
 import path from "path";
 import { generateTemplate } from "#/mail/template";
 import { VERIFICATION_EMAIL } from "./variables";
@@ -53,6 +52,85 @@ export async function sendVerificationMail(token: string, profile: Profile) {
         filename: "welcome.png",
         path: path.join(__dirname, "../mail/welcome.png"),
         cid: "welcome",
+      },
+    ],
+  });
+}
+
+interface Options {
+  email: string;
+  link: string;
+}
+
+export async function sendForgetPassworkLink(options: Options) {
+  const { email, link } = options;
+
+  const message = `We just received a request that you forgot your 
+  password. You can use the link below and creat brand new password.`;
+
+  const transport = generateMailTransporter();
+
+  transport.sendMail({
+    to: email,
+    from: VERIFICATION_EMAIL,
+    subject: "Password Reset Link",
+    html: generateTemplate({
+      title: "Forgot Password",
+      message: message,
+      logo: "cid:logo",
+      banner: "cid:forget_password",
+      link: link,
+      btnTitle: "Reset Password",
+    }),
+    attachments: [
+      {
+        filename: "logo.png",
+        path: path.join(__dirname, "../mail/logo.png"),
+        cid: "logo",
+      },
+      {
+        filename: "forget_password.png",
+        path: path.join(__dirname, "../mail/forget_password.png"),
+        cid: "forget_password",
+      },
+    ],
+  });
+}
+
+interface PassResetOptions {
+  email: string;
+  link: string;
+  name: string;
+}
+
+export async function sendPassResetSuccessEmail(name: string, email: string) {
+  const message = `Dear ${name} we just updated your new password. You can 
+  now sign in with your new password`;
+
+  const transport = generateMailTransporter();
+
+  transport.sendMail({
+    to: email,
+    from: VERIFICATION_EMAIL,
+    subject: "Password Reset Successfully",
+    html: generateTemplate({
+      title: "Password Reset Successfully",
+      message: message,
+      logo: "cid:logo",
+      banner: "cid:forget_password",
+      link: SIGN_IN_URL,
+      btnTitle: "Sign in",
+    }),
+    attachments: [
+      {
+        filename: "logo.png",
+        path: path.join(__dirname, "../mail/logo.png"),
+        cid: "logo",
+      },
+      {
+        filename: "forget_password.png",
+        path: path.join(__dirname, "../mail/forget_password.png"),
+        cid: "forget_password",
       },
     ],
   });
