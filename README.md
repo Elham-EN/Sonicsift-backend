@@ -1,8 +1,8 @@
 # SonicSift (Backend)
 
-An Audio Sharing App is a digital platform or application that allows users to upload, distribute, share, and sometimes monetize audio content. These apps often serve as a hub for creators, podcasters, musicians, and other audio content producers to make their work available to a broad audience. Users typically can listen to the audio content on-demand.
+A mobile podcast player app built with React Native and TypeScript. Users can sign in, explore, stream, and upload podcasts. Features include user authentication, playlist management, content liking, and social interactions like following other users. Backend powered by Node.js, Express, and MongoDB. Designed for simplicity and a straightforward podcast listening experience.
 
-## This app's backend is built with:
+## Tech Stack:
 
 - TypeScript
 - Node.js
@@ -10,5 +10,6 @@ An Audio Sharing App is a digital platform or application that allows users to u
 - MongoDB
 - Mailtrap
 - Cloudinary
-
-## Setup to run the app
+- React Native
+- Expo
+- Redux
